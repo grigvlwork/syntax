@@ -9,6 +9,9 @@ import enchant
 import difflib
 import datetime
 import time
+import shutil
+import os
+import glob
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -73,6 +76,10 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.teacher_comment = ''
         self.correct_code = ''
         self.pupil_code = ''
+        self.correct_code_model = QStandardItemModel()
+        self.pupil_code_model = QStandardItemModel()
+        self.tab_to_space_btn.clicked.connect(self.tab_to_space)
+        self.explanation_pte.textChanged.connect(self.create_my_answer)
         self.insert_answer_btn.clicked.connect(self.insert)
         self.insert_code_btn.clicked.connect(self.insert_code)
         self.use_file_cb.clicked.connect(self.use_file)
@@ -80,8 +87,8 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.pep8_btn.clicked.connect(self.pep8_correct)
         self.copy_to_correct_btn.clicked.connect(self.copy_to_correct)
         self.pupil_tw.currentChanged.connect(self.pupil_row_generator)
-        self.correct_code_model = QStandardItemModel()
-        self.pupil_code_model = QStandardItemModel()
+        self.correct_tw.currentChanged.connect(self.correct_row_generator)
+        self.copy_answer_btn.clicked.connect(self.copy_my_answer)
 
     def insert(self):
         # self.curr_time = 0
@@ -115,6 +122,8 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             self.explanation_pte.appendPlainText(code)
         if all(x in t for x in ['<comment>', '</comment>']):
             self.teacher_comment = t[t.find('<comment>') + 9:t.find('</comment>')].strip()
+            if self.teacher_comment == 'Комментарий к задаче для супертренера':
+                self.teacher_comment = ''
         self.create_my_answer()
 
     def use_file(self):
@@ -139,6 +148,15 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             pyperclip.copy(self.my_answer_pte.toPlainText())
 
     def run_correct(self):
+        if self.use_file_cb.isChecked():
+            if (self.part_cb.currentText() == 'beta' or
+                    self.number_cb.currentText() in ['17', '22', '24']):
+                folder = '/files/beta/'
+            else:
+                folder = '/files/' + self.part_cb.currentText() + '/'
+            file_name = self.number_cb.currentText() + '.*'
+            for file in glob.glob(os.getcwd() + folder + file_name):
+                shutil.copy(file, os.getcwd())
         code = self.correct_code_pte.toPlainText()
         timeout = self.timeout_sb.value()
         self.correct_output_lb.setText('Вывод: ' + run_text(remove_comments(code), timeout))
@@ -165,31 +183,44 @@ class MyWidget(QMainWindow, Ui_MainWindow):
     def pupil_row_generator(self):
         if self.pupil_tw.currentIndex() == 1:
             self.pupil_code_model.clear()
-            for row in self.pupil_code.split('\n'):
+            for row in self.pupil_code_pte.toPlainText().split('\n'):
                 it = QStandardItem(row)
                 self.pupil_code_model.appendRow(it)
             self.pupil_code_tv.setModel(self.pupil_code_model)
             self.pupil_code_tv.horizontalHeader().setVisible(False)
             self.pupil_code_tv.resizeColumnToContents(0)
 
+    def correct_row_generator(self):
+        if self.correct_tw.currentIndex() == 1:
+            self.correct_code_model.clear()
+            for row in self.correct_code_pte.toPlainText().split('\n'):
+                it = QStandardItem(row)
+                self.correct_code_model.appendRow(it)
+            self.correct_code_tv.setModel(self.correct_code_model)
+            self.correct_code_tv.horizontalHeader().setVisible(False)
+            self.correct_code_tv.resizeColumnToContents(0)
+
+
+    def tab_to_space(self):
+        t = self.explanation_pte.toPlainText()
+        t = t.replace('\t', '    ')
+        self.explanation_pte.setPlainText(t)
+
+
+def excepthook(exc_type, exc_value, exc_tb):
+    tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+    print(tb)
+    msg = QMessageBox.critical(
+        None,
+        "Error catched!:",
+        tb
+    )
+    QApplication.quit()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyWidget()
-
-
-    def excepthook(exc_type, exc_value, exc_tb):
-        tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
-        print(tb)
-
-        msg = QMessageBox.critical(
-            None,
-            "Error catched!:",
-            tb
-        )
-        QApplication.quit()
-
-
     sys.excepthook = excepthook
     ex.show()
     sys.exit(app.exec_())
