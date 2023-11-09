@@ -72,8 +72,8 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.use_file_cb.setChecked(False)
         self.teacher_comment = ''
         self.insert_answer_btn.clicked.connect(self.insert)
+        self.insert_code_btn.clicked.connect(self.insert_code)
         self.use_file_cb.clicked.connect(self.use_file)
-
 
     def insert(self):
         # self.curr_time = 0
@@ -83,6 +83,12 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.part_cb.setVisible(False)
         self.number_cb.setVisible(False)
         self.use_file_cb.setChecked(False)
+
+    def insert_code(self):
+        t = pyperclip.paste()
+        t = t.replace('```\n', '')
+        t = t.replace('```', '')
+        self.pupil_code_pte.setPlainText(t)
 
     def create_my_answer(self):
         text = '<explanation>\n' + self.explanation_pte.toPlainText() + '\n</explanation>\n\n' + \
