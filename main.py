@@ -71,9 +71,17 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.number_cb.setVisible(False)
         self.use_file_cb.setChecked(False)
         self.teacher_comment = ''
+        self.correct_code = ''
+        self.pupil_code = ''
         self.insert_answer_btn.clicked.connect(self.insert)
         self.insert_code_btn.clicked.connect(self.insert_code)
         self.use_file_cb.clicked.connect(self.use_file)
+        self.run_btn.clicked.connect(self.run_correct)
+        self.pep8_btn.clicked.connect(self.pep8_correct)
+        self.copy_to_correct_btn.clicked.connect(self.copy_to_correct)
+        self.pupil_tw.currentChanged.connect(self.pupil_row_generator)
+        self.correct_code_model = QStandardItemModel()
+        self.pupil_code_model = QStandardItemModel()
 
     def insert(self):
         # self.curr_time = 0
@@ -89,6 +97,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         t = t.replace('```\n', '')
         t = t.replace('```', '')
         self.pupil_code_pte.setPlainText(t)
+        self.pupil_code = t
 
     def create_my_answer(self):
         text = '<explanation>\n' + self.explanation_pte.toPlainText() + '\n</explanation>\n\n' + \
@@ -128,6 +137,40 @@ class MyWidget(QMainWindow, Ui_MainWindow):
                 pyperclip.copy(self.my_answer_pte.toPlainText())
         else:
             pyperclip.copy(self.my_answer_pte.toPlainText())
+
+    def run_correct(self):
+        code = self.correct_code_pte.toPlainText()
+        timeout = self.timeout_sb.value()
+        self.correct_output_lb.setText('Вывод: ' + run_text(remove_comments(code), timeout))
+
+    def pep8_correct(self):
+        code = self.correct_code_pte.toPlainText()
+        try:
+            code = black.format_str(code, mode=black.Mode(
+                target_versions={black.TargetVersion.PY310},
+                line_length=101,
+                string_normalization=False,
+                is_pyi=False,
+            ), )
+        except Exception as err:
+            code = code.strip()
+        self.correct_code_pte.setPlainText(code)
+        self.correct_code = code
+
+    def copy_to_correct(self):
+        self.correct_code_pte.clear()
+        self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText())
+        self.pep8_correct()
+
+    def pupil_row_generator(self):
+        if self.pupil_tw.currentIndex() == 1:
+            self.pupil_code_model.clear()
+            for row in self.pupil_code.split('\n'):
+                it = QStandardItem(row)
+                self.pupil_code_model.appendRow(it)
+            self.pupil_code_tv.setModel(self.pupil_code_model)
+            self.pupil_code_tv.horizontalHeader().setVisible(False)
+            self.pupil_code_tv.resizeColumnToContents(0)
 
 
 if __name__ == '__main__':

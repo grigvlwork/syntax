@@ -289,7 +289,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="timeout_btn">
+           <widget class="QSpinBox" name="timeout_sb">
             <property name="minimum">
              <number>10</number>
             </property>
