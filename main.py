@@ -101,10 +101,13 @@ class MyWidget(QMainWindow, Ui_MainWindow):
 
     def insert_code(self):
         t = pyperclip.paste()
+        t = t.replace('```\n\n', '')
         t = t.replace('```\n', '')
         t = t.replace('```', '')
         self.pupil_code_pte.setPlainText(t)
         self.pupil_code = t
+        self.copy_to_correct()
+        self.run_correct()
 
     def create_my_answer(self):
         text = '<explanation>\n' + self.explanation_pte.toPlainText() + '\n</explanation>\n\n' + \
