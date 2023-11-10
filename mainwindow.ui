@@ -186,6 +186,9 @@
         </item>
         <item>
          <widget class="QPlainTextEdit" name="my_answer_pte">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="font">
            <font>
             <family>Consolas</family>
