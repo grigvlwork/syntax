@@ -13,9 +13,10 @@ import shutil
 import os
 import glob
 from PyQt5 import uic, QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from mainwindow import Ui_MainWindow
+from need_file import Ui_need_file_dlg
 
 
 def run_text(text, timeout):
@@ -63,6 +64,12 @@ def spell_check(text):
                 sim[measure] = word
             result.append([w, sim[max(sim.keys())]])
     return result
+
+
+class Need_file_dlg(QDialog, Ui_need_file_dlg):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
 
 
 class MyWidget(QMainWindow, Ui_MainWindow):
@@ -160,6 +167,22 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             file_name = self.number_cb.currentText() + '.*'
             for file in glob.glob(os.getcwd() + folder + file_name):
                 shutil.copy(file, os.getcwd())
+        elif not self.use_file_cb.isChecked() and \
+                ('.txt' in self.correct_code_pte.toPlainText() or
+                 '.csv' in self.correct_code_pte.toPlainText()):
+            need_file_frm = Need_file_dlg()
+            need_file_frm.exec()
+            if need_file_frm.accepted:
+                if (need_file_frm.part_cb.currentText() == 'beta' or
+                        need_file_frm.number_cb.currentText() in ['17', '22', '24']):
+                    folder = '/files/beta/'
+                else:
+                    folder = '/files/' + need_file_frm.part_cb.currentText() + '/'
+                file_name = need_file_frm.number_cb.currentText() + '.*'
+                for file in glob.glob(os.getcwd() + folder + file_name):
+                    shutil.copy(file, os.getcwd())
+            else:
+                return
         code = self.correct_code_pte.toPlainText()
         timeout = self.timeout_sb.value()
         self.correct_output_lb.setText('Вывод: ' + run_text(remove_comments(code), timeout))
@@ -202,7 +225,6 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             self.correct_code_tv.setModel(self.correct_code_model)
             self.correct_code_tv.horizontalHeader().setVisible(False)
             self.correct_code_tv.resizeColumnToContents(0)
-
 
     def tab_to_space(self):
         t = self.explanation_pte.toPlainText()

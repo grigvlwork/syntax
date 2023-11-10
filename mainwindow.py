@@ -201,7 +201,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Обработка синтаксических ошибок"))
         self.insert_answer_btn.setText(_translate("MainWindow", "Вставить ответ тренера"))
         self.insert_code_btn.setText(_translate("MainWindow", "Вставить код ученика"))
         self.use_file_cb.setText(_translate("MainWindow", "Использовать файл"))
