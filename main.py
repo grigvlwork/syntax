@@ -177,7 +177,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
 
     def copy_to_correct(self):
         self.correct_code_pte.clear()
-        self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText())
+        self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText().replace('\t', '    '))
         self.pep8_correct()
 
     def pupil_row_generator(self):
