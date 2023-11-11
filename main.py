@@ -195,7 +195,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.correct_output_lb.setText('Вывод: ' + run_text(remove_comments(code), timeout))
 
     def pep8_correct(self):
-        self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText().replace('\t', '    '))
+        self.correct_code_pte.setPlainText(self.correct_code_pte.toPlainText().replace('\t', '    '))
         code = self.correct_code_pte.toPlainText()
         try:
             code = black.format_str(code, mode=black.Mode(
