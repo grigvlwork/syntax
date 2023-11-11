@@ -20,7 +20,7 @@ from need_file import Ui_need_file_dlg
 
 
 def run_text(text, timeout):
-    with open('code.py', 'w') as c:
+    with open('code.py', 'w', encoding='utf-8') as c:
         c.write(text)
     try:
         completed_process = subprocess.run(['python', 'code.py'], capture_output=True, text=True, timeout=timeout)
@@ -100,7 +100,9 @@ class MyWidget(QMainWindow, Ui_MainWindow):
     def insert(self):
         # self.curr_time = 0
         # self.working_clock.start()
-        self.teacher_answer_pte.setPlainText(pyperclip.paste())
+        s = pyperclip.paste()
+        # s = s.encode(encoding='UTF-8', errors='strict').decode()
+        self.teacher_answer_pte.setPlainText(s)
         self.processing()
         self.part_cb.setVisible(False)
         self.number_cb.setVisible(False)
@@ -111,6 +113,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         t = t.replace('```\n\n', '')
         t = t.replace('```\n', '')
         t = t.replace('```', '')
+        t = t.encode(encoding='UTF-8', errors='strict').decode()
         self.pupil_code_pte.setPlainText(t)
         self.pupil_code = t
         self.copy_to_correct()
@@ -181,6 +184,11 @@ class MyWidget(QMainWindow, Ui_MainWindow):
                 file_name = need_file_frm.number_cb.currentText() + '.*'
                 for file in glob.glob(os.getcwd() + folder + file_name):
                     shutil.copy(file, os.getcwd())
+                self.use_file_cb.setChecked(True)
+                self.part_cb.setVisible(True)
+                self.part_cb.setCurrentText(need_file_frm.part_cb.currentText())
+                self.number_cb.setVisible(True)
+                self.number_cb.setCurrentText(need_file_frm.number_cb.currentText())
             else:
                 return
         code = self.correct_code_pte.toPlainText()
@@ -228,7 +236,13 @@ class MyWidget(QMainWindow, Ui_MainWindow):
 
     def tab_to_space(self):
         t = self.explanation_pte.toPlainText()
-        t = t.replace('\t', '    ')
+        if t.count('```') in [1, 2, 3]:
+            t = t.replace('```\n\n', '')
+            t = t.replace('```\n', '')
+            t = t.replace('```', '')
+        else:
+            s = t.split('```\n')
+            t = s[0] + '```\n'.join(s[1:-1]) + s[-1]
         self.explanation_pte.setPlainText(t)
 
 

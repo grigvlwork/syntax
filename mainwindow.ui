@@ -166,7 +166,7 @@
           <item>
            <widget class="QPushButton" name="tab_to_space_btn">
             <property name="text">
-             <string>Tab-&gt;Space</string>
+             <string>```</string>
             </property>
            </widget>
           </item>
