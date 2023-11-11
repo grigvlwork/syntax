@@ -113,7 +113,6 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         t = t.replace('```\n\n', '')
         t = t.replace('```\n', '')
         t = t.replace('```', '')
-        t = t.encode(encoding='UTF-8', errors='strict').decode()
         self.pupil_code_pte.setPlainText(t)
         self.pupil_code = t
         self.copy_to_correct()
@@ -196,6 +195,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.correct_output_lb.setText('Вывод: ' + run_text(remove_comments(code), timeout))
 
     def pep8_correct(self):
+        self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText().replace('\t', '    '))
         code = self.correct_code_pte.toPlainText()
         try:
             code = black.format_str(code, mode=black.Mode(
@@ -211,8 +211,6 @@ class MyWidget(QMainWindow, Ui_MainWindow):
 
     def copy_to_correct(self):
         self.correct_code_pte.clear()
-        self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText().replace('\t', '    '))
-        self.pep8_correct()
 
     def pupil_row_generator(self):
         if self.pupil_tw.currentIndex() == 1:
