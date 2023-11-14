@@ -32,10 +32,12 @@ def run_text(text, timeout):
             else:
                 return t
         else:
-            if len(completed_process.stderr) > 50:
-                return completed_process.stderr[:50] + '\n' + completed_process.stderr[50:]
+            t = completed_process.stderr
+            t = t.encode('cp1251').decode('utf-8')
+            if len(t) > 50:
+                return t[:50] + '\n' + t[50:]
             else:
-                return completed_process.stderr
+                return t
     except subprocess.TimeoutExpired:
         return f'Программа выполнялась более {timeout} секунд'
 
