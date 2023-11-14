@@ -25,10 +25,12 @@ def run_text(text, timeout):
     try:
         completed_process = subprocess.run(['python', 'code.py'], capture_output=True, text=True, timeout=timeout)
         if completed_process.returncode == 0:
-            if len(completed_process.stdout) > 25:
-                return completed_process.stdout[:25] + '..'
+            t = completed_process.stdout
+            t = t.encode('cp1251').decode('utf-8')
+            if len(t) > 25:
+                return t[:25] + '..'
             else:
-                return completed_process.stdout
+                return t
         else:
             if len(completed_process.stderr) > 50:
                 return completed_process.stderr[:50] + '\n' + completed_process.stderr[50:]
