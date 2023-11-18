@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 from mainwindow import Ui_MainWindow
 from need_file import Ui_need_file_dlg
+import res_rc
 
 
 def run_text(text, timeout):
@@ -100,6 +101,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.pupil_tw.currentChanged.connect(self.pupil_row_generator)
         self.correct_tw.currentChanged.connect(self.correct_row_generator)
         self.copy_answer_btn.clicked.connect(self.copy_my_answer)
+        self.copy_correct_btn.clicked.connect(self.copy_correct)
 
     def insert(self):
         # self.curr_time = 0
@@ -216,6 +218,9 @@ class MyWidget(QMainWindow, Ui_MainWindow):
     def copy_to_correct(self):
         self.correct_code_pte.clear()
         self.correct_code_pte.setPlainText(self.pupil_code_pte.toPlainText())
+
+    def copy_correct(self):
+        pyperclip.copy(self.correct_code_pte.toPlainText())
 
     def pupil_row_generator(self):
         if self.pupil_tw.currentIndex() == 1:

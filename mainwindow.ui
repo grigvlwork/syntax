@@ -300,6 +300,29 @@
            </spacer>
           </item>
           <item>
+           <widget class="QPushButton" name="copy_correct_btn">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="res.qrc">
+              <normaloff>:/img/images/copy_icon.svg</normaloff>:/img/images/copy_icon.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="pep8_btn">
             <property name="text">
              <string>PEP8</string>
@@ -390,6 +413,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
