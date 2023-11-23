@@ -19,6 +19,8 @@ from mainwindow import Ui_MainWindow
 from need_file import Ui_need_file_dlg
 import res_rc
 
+# TODO dark theme https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
+
 
 def run_text(text, timeout):
     with open('code.py', 'w', encoding='utf-8') as c:
