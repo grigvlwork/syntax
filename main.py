@@ -105,6 +105,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.correct_tw.currentChanged.connect(self.correct_row_generator)
         self.copy_answer_btn.clicked.connect(self.copy_my_answer)
         self.copy_correct_btn.clicked.connect(self.copy_correct)
+        self.toggle_theme_btn.clicked.connect(self.change_theme)
 
     def insert(self):
         # self.curr_time = 0
@@ -255,6 +256,15 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             s = t.split('```\n')
             t = s[0] + '```\n'.join(s[1:-1]) + s[-1]
         self.explanation_pte.setPlainText(t)
+
+    def change_theme(self):
+        if self.toggle_theme_btn.text() == 'Светлая тема':
+            self.toggle_theme_btn.setText('Тёмная тема')
+            app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt5', palette=qdarkstyle.LightPalette))
+        else:
+            self.toggle_theme_btn.setText('Светлая тема')
+            app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt5', palette=qdarkstyle.DarkPalette))
+
 
 
 def excepthook(exc_type, exc_value, exc_tb):
