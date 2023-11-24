@@ -12,6 +12,7 @@ import time
 import shutil
 import os
 import glob
+import qdarkstyle
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
@@ -19,7 +20,7 @@ from mainwindow import Ui_MainWindow
 from need_file import Ui_need_file_dlg
 import res_rc
 
-# TODO dark theme https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
+# dark theme https://stackoverflow.com/questions/48256772/dark-theme-for-qt-widgets
 
 
 def run_text(text, timeout):
@@ -271,5 +272,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyWidget()
     sys.excepthook = excepthook
+    app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt5', palette=qdarkstyle.DarkPalette))
     ex.show()
     sys.exit(app.exec_())
